@@ -1,0 +1,11 @@
+services:
+    datetime.service:
+        class: Fincallorca\DateTimeBundle\Service\DateTimeZoneService
+        arguments: ["@service_container"]
+        public: true
+    Fincallorca\DateTimeBundle\EventListener\RequestListener:
+        class: Fincallorca\DateTimeBundle\EventListener\RequestListener
+        calls:
+            - [SetDateTimeZoneService, ['@datetime.service']]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request }
