@@ -12,6 +12,17 @@ class DateTime extends \DateTime
 	use DateTimeZoneServiceContainer;
 
 	/**
+	 * Returns the current server timestamp.
+	 *
+	 * @return DateTime
+	 */
+	public static function currentDateTime()
+	{
+		$date_time = static::createFromFormat('U.u', sprintf('%.6F', microtime(true)));
+		return $date_time->toServerDateTime();
+	}
+
+	/**
 	 * Copies and casts the submitted datetime object to a new datetime object.
 	 *
 	 * To keep the copy as a clone (like {@see clone()} does), submit the additional parameter `$keep_class`.
