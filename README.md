@@ -24,7 +24,7 @@ The symfony **DateTimeBundle** provides a couple of functionality:
 #### Install via Composer
 
 ```bash
-composer require fincallorca/datetimebundle "dev-master"
+composer require fincallorca/datetimebundle "~0.0"
 ```
 
 #### Add Bundle to Symfony Application
