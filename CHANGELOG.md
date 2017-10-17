@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [0.0.1] - 2017-10-17
+
+### Fixed
+- Namespace of bundle file changed.
+
 ## [0.0.0] - 2017-10-16
 
 First version.

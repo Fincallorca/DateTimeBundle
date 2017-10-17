@@ -1,6 +1,6 @@
 <?php
 
-namespace DateTimeBundle;
+namespace Fincallorca\DateTimeBundle;
 
 use Fincallorca\DateTimeBundle\DependencyInjection\DateTimeBundleExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
