@@ -61,3 +61,15 @@ datetime:
     database: "UTC"
     client: "Europe/London"
 ```
+
+#### Enable Support in Class Request
+
+Change the used Request class in all `public/app*.php` files.
+
+```php
+// comment follwing line
+//use Symfony\Component\HttpFoundation\Request;
+
+// and add the new request class
+use Fincallorca\DateTimeBundle\Component\HttpFoundation\Request;
+```
