@@ -17,8 +17,9 @@
   ],
   "require": {
 	"php": ">=5.5",
-	"symfony/framework-bundle": "~3.0",
-	"doctrine/dbal": "~2.5"
+	"symfony/symfony": "^3.3.0",
+	"symfony/framework-bundle": "^3.3",
+	"doctrine/dbal": "^2.5"
   },
   "require-dev": {
   },

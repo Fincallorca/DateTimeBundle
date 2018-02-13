@@ -3,10 +3,10 @@
 namespace Fincallorca\DateTimeBundle\Doctrine\DBAL\Types;
 
 use Fincallorca\DateTimeBundle\Component\DateTime;
-use Fincallorca\DateTimeBundle\Component\DateTimeZoneServiceContainer;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\DateTimeType as BaseDateTimeType;
+use Fincallorca\DateTimeBundle\Component\DateTimeKernel;
 
 /**
  * Class UTCDateTimeType is used to save all datetime values in database as UTC.
@@ -16,7 +16,6 @@ use Doctrine\DBAL\Types\DateTimeType as BaseDateTimeType;
  */
 class DateTimeType extends BaseDateTimeType
 {
-	use DateTimeZoneServiceContainer;
 
 	/**
 	 * {@inheritdoc}
@@ -49,7 +48,7 @@ class DateTimeType extends BaseDateTimeType
 		$converted = DateTime::createFromFormat(
 			$platform->getDateTimeFormatString(),
 			$value,
-			self::$DateTimeZoneService->getDateTimeZoneDatabase()
+			DateTimeKernel::getTimeZoneDatabase()
 		)->toServerDateTime();
 
 		if( !$converted )

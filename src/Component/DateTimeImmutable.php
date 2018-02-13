@@ -3,11 +3,11 @@
 namespace Fincallorca\DateTimeBundle\Component;
 
 /**
- * Class DateTime
+ * Class DateTimeImmutable
  *
  * @package Fincallorca\DateTimeBundle
  */
-class DateTime extends \DateTime
+class DateTimeImmutable extends \DateTimeImmutable
 {
 
 	/**
@@ -22,7 +22,7 @@ class DateTime extends \DateTime
 	}
 
 	/**
-	 * Copies and casts the submitted datetime object to a new DateTime object.
+	 * Copies and casts the submitted datetime object to a new DateTimeImmutable object.
 	 *
 	 * @param \DateTimeInterface $dateTime the source object
 	 *
@@ -45,7 +45,7 @@ class DateTime extends \DateTime
 	}
 
 	/**
-	 * Parses a string into a new DateTime object according to the specified format.
+	 * Parses a string into a new DateTimeImmutable object according to the specified format.
 	 *
 	 * @param string        $format Format accepted by date().
 	 * @param string        $time   String representing the time.
@@ -69,7 +69,7 @@ class DateTime extends \DateTime
 	}
 
 	/**
-	 * Returns a new DateTime object.
+	 * Returns a new DateTimeImmutable object.
 	 *
 	 * @param string $time
 	 * @param null   $timezone
