@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [0.0.2] - 2018-04-27
+
+### Added
+- Added support for usage in console commands.
+- Added DateTimeImmutable class.
+
+### Changed
+- Refactored services.
+- Changed minimum php version to 5.5.
+
+### Removed
+- Removed static service container.
+
 ## [0.0.1] - 2017-10-17
 
 ### Fixed
