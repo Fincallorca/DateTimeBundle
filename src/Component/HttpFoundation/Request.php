@@ -2,8 +2,7 @@
 
 namespace Fincallorca\DateTimeBundle\Component\HttpFoundation;
 
-use Fincallorca\DateTimeBundle\Component\DateTime;
-use Fincallorca\DateTimeBundle\Component\DateTimeZoneServiceContainer;
+use Fincallorca\DateTimeBundle\Component\DateTimeImmutable;
 use Symfony\Component\HttpFoundation\Request as BaseRequest;
 
 /**
@@ -11,71 +10,92 @@ use Symfony\Component\HttpFoundation\Request as BaseRequest;
  *
  * @package Fincallorca\DateTimeBundle
  */
-class Request extends BaseRequest
+class Request extends BaseRequest implements RequestDateTimeInterface
 {
-
-	use DateTimeZoneServiceContainer;
+	/**
+	 * the request's timestamp
+	 *
+	 * @var integer|float
+	 */
+	protected $timeStamp = null;
 
 	/**
-	 * all used timezones to avoid multiple instantiations
+	 * `true` if the time was fetched from server variables (*REQUEST_TIME_FLOAT* or *REQUEST_TIME*), else `false`
 	 *
-	 * the key is the label of the timezone, i.e. `'UTC'`
-	 *
-	 * @var \DateTimeZone[]
+	 * @var boolean
 	 */
-	protected $dateTimeZone = array();
+	protected $timeStampFromRequest = false;
 
 	/**
-	 * the datetime objects of the current request,
-	 * as array to provide datetime objects in multiple time zones
+	 * the timestamp as an immutable datetime object
 	 *
-	 * the key is the label of the timezone, i.e. `'UTC'`
-	 *
-	 * @var DateTime[]
+	 * @var DateTimeImmutable
 	 */
-	protected $dateTime = array();
+	protected $dateTime = null;
 
 	/**
-	 *
-	 * @return integer
+	 * {@inheritdoc}
 	 */
-	public function getTimestamp()
+	public function getTimeStamp()
 	{
-		return $this->server->get('REQUEST_TIME');
+		if( !is_null($this->timeStamp) )
+		{
+			return $this->timeStamp;
+		}
+
+		if( $this->server->has('REQUEST_TIME_FLOAT') )
+		{
+			$this->timeStamp            = $this->server->has('REQUEST_TIME_FLOAT');
+			$this->timeStampFromRequest = true;
+		}
+		elseif( $this->server->has('REQUEST_TIME') )
+		{
+			$this->timeStamp            = $this->server->has('REQUEST_TIME');
+			$this->timeStampFromRequest = true;
+		}
+		else
+		{
+			$this->timeStamp = time();
+		}
+
+		return $this->timeStampFromRequest;
 	}
 
 	/**
-	 * @param string $timezone
-	 *
-	 * @return \DateTimeZone
+	 * {@inheritdoc}
 	 */
-	protected function getDateTimeZone($timezone)
+	public function isTimeStampFromRequest()
 	{
-		if( !array_key_exists($timezone, $this->dateTimeZone) )
-		{
-			$this->dateTimeZone[ $timezone ] = new \DateTimeZone($timezone);
-		}
+		$this->getTimeStamp();
 
-		return $this->dateTimeZone[ $timezone ];
+		return $this->timeStampFromRequest;
 	}
 
 	/**
-	 * @param string|null $timezone
-	 *
-	 * @return \DateTime
+	 * {@inheritdoc}
 	 */
-	public function getDateTime($timezone = null)
+	public function getDateTime()
 	{
-		if( is_null($timezone) )
+		if( !is_null($this->dateTime) )
 		{
-			$timezone = self::$DateTimeZoneService->getDateTimeZoneServer()->getName();
+			return $this->dateTime;
 		}
 
-		if( !array_key_exists($timezone, $this->dateTime) )
+		$this->dateTime = false;
+
+		if( $this->timeStampFromRequest )
 		{
-			$this->dateTime[ $timezone ] = DateTime::createFromFormat('U', $this->getTimestamp())->setTimezone($this->getDateTimeZone($timezone));
+			$this->dateTime = is_float($this->timeStamp) ?
+				DateTimeImmutable::createFromFormat('U.u', $this->getTimestamp()) :
+				DateTimeImmutable::create(sprintf("@%d", $this->getTimestamp()));
 		}
 
-		return $this->dateTime[ $timezone ];
+		if( $this->dateTime === false )
+		{
+			$this->dateTime = new DateTimeImmutable('now', new \DateTimeZone('+00:00'));
+		}
+
+		return $this->dateTime;
 	}
+
 }
