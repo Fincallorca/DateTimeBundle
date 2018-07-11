@@ -101,6 +101,14 @@ class DateTime extends \DateTime
 	}
 
 	/**
+	 * @return integer
+	 */
+	protected function getAbsoluteMonths()
+	{
+		return intval($this->format('Y')) * 12 + intval($this->format('m'));
+	}
+
+	/**
 	 * @return static
 	 */
 	public function toServerDateTime()
@@ -162,6 +170,58 @@ class DateTime extends \DateTime
 	public function subDays($days)
 	{
 		return $this->addDays(0 - $days);
+	}
+
+	/**
+	 * Adds an amount of months to the current date.
+	 *
+	 * **ATTENTION**: If the current date is the 31/30/29 and the target month has less days then the current month, the day will be set to the last
+	 * day of the target month.
+	 *
+	 * Example: Current date is '2017-01-30 17:00:00' and you want to add '1 month', then the result will be '2017-02-28 17:00:00'.
+	 *
+	 * @param integer $month
+	 *
+	 * @return false|static
+	 */
+	public function addMonth($month)
+	{
+		$absolute_months = $this->getAbsoluteMonths();
+
+		$this->add(\DateInterval::createFromDateString(sprintf('%d month', $month)));
+
+		if( $absolute_months + $month !== $this->getAbsoluteMonths() )
+		{
+			$this->subDays((int) $this->format('d'));
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Subs an amount of months from the current date.
+	 *
+	 * **ATTENTION**: If the current date is the 31/30/29 and the target month has less days then the current month, the day will be set to the last
+	 * day of the target month.
+	 *
+	 * Example: Current date is '2017-03-31 17:00:00' and you want to sub '1 month', then the result will be '2017-02-28 17:00:00'.
+	 *
+	 * @param int $month
+	 *
+	 * @return false|static
+	 */
+	public function subMonth($month)
+	{
+		$absolute_months = $this->getAbsoluteMonths();
+
+		$this->sub(\DateInterval::createFromDateString(sprintf('%d month', $month)));
+
+		if( $absolute_months - $month !== $this->getAbsoluteMonths() )
+		{
+			$this->subDays((int) $this->format('d'));
+		}
+
+		return $this;
 	}
 
 	/**
