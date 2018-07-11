@@ -9,6 +9,25 @@ namespace Fincallorca\DateTimeBundle\Component;
  */
 class DateTimeImmutable extends \DateTimeImmutable
 {
+	/**
+	 * @var static|null
+	 */
+	protected static $today = null;
+
+	/**
+	 * Returns the server time of today.
+	 *
+	 * @return static
+	 */
+	public static function today()
+	{
+		if( is_null(self::$today) )
+		{
+			self::$today = self::currentDateTime()->toServerDateTime();
+		}
+
+		return self::$today;
+	}
 
 	/**
 	 * Returns the current server timestamp.
@@ -22,36 +41,14 @@ class DateTimeImmutable extends \DateTimeImmutable
 	}
 
 	/**
-	 * Copies and casts the submitted datetime object to a new DateTimeImmutable object.
+	 * Parses a string into a new DateTime object according to the specified format.
 	 *
-	 * @param \DateTimeInterface $dateTime the source object
-	 *
-	 * @return false|static
-	 */
-	public static function createFromObject(\DateTimeInterface $dateTime)
-	{
-		if( is_object($dateTime) )
-		{
-			$class_name = static::class;
-
-			$parts      = explode(':', serialize($dateTime));
-			$parts[ 1 ] = strlen($class_name);
-			$parts[ 2 ] = sprintf('"%s"', $class_name);
-
-			return unserialize(implode(':', $parts));
-		}
-
-		return new static($dateTime);
-	}
-
-	/**
-	 * Parses a string into a new DateTimeImmutable object according to the specified format.
-	 *
-	 * @param string        $format Format accepted by date().
-	 * @param string        $time   String representing the time.
-	 * @param \DateTimeZone $object A DateTimeZone object representing the desired time zone.
+	 * @param string             $format Format accepted by date().
+	 * @param string             $time   String representing the time.
+	 * @param \DateTimeZone|null $object [optional] A DateTimeZone object representing the desired time zone.
 	 *
 	 * @return static|boolean
+	 *
 	 * @link http://php.net/manual/en/datetime.createfromformat.php
 	 */
 	public static function createFromFormat($format, $time, $object = null)
@@ -69,6 +66,29 @@ class DateTimeImmutable extends \DateTimeImmutable
 	}
 
 	/**
+	 * Copies and casts the submitted datetime object to a new DateTimeImmutable object.
+	 *
+	 * @param \DateTimeInterface $dateTime the source object
+	 *
+	 * @return false|static
+	 */
+	public static function createFromObject($dateTime)
+	{
+		if( is_object($dateTime) )
+		{
+			$class_name = static::class;
+
+			$parts      = explode(':', serialize($dateTime));
+			$parts[ 1 ] = strlen($class_name);
+			$parts[ 2 ] = sprintf('"%s"', $class_name);
+
+			return unserialize(implode(':', $parts));
+		}
+
+		return new static($dateTime);
+	}
+
+	/**
 	 * Returns a new DateTimeImmutable object.
 	 *
 	 * @param string $time
@@ -79,6 +99,14 @@ class DateTimeImmutable extends \DateTimeImmutable
 	public static function create($time = 'now', $timezone = null)
 	{
 		return new static($time, $timezone);
+	}
+
+	/**
+	 * @return integer
+	 */
+	protected function getAbsoluteMonths()
+	{
+		return intval($this->format('Y')) * 12 + intval($this->format('m'));
 	}
 
 	/**
@@ -146,6 +174,58 @@ class DateTimeImmutable extends \DateTimeImmutable
 	}
 
 	/**
+	 * Adds an amount of months to the current date.
+	 *
+	 * **ATTENTION**: If the current date is the 31/30/29 and the target month has less days then the current month, the day will be set to the last
+	 * day of the target month.
+	 *
+	 * Example: Current date is '2017-01-30 17:00:00' and you want to add '1 month', then the result will be '2017-02-28 17:00:00'.
+	 *
+	 * @param integer $month
+	 *
+	 * @return false|static
+	 */
+	public function addMonth($month)
+	{
+		$absolute_months = $this->getAbsoluteMonths();
+
+		$this->add(\DateInterval::createFromDateString(sprintf('%d month', $month)));
+
+		if( $absolute_months + $month !== $this->getAbsoluteMonths() )
+		{
+			$this->subDays((int) $this->format('d'));
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Subs an amount of months from the current date.
+	 *
+	 * **ATTENTION**: If the current date is the 31/30/29 and the target month has less days then the current month, the day will be set to the last
+	 * day of the target month.
+	 *
+	 * Example: Current date is '2017-03-31 17:00:00' and you want to sub '1 month', then the result will be '2017-02-28 17:00:00'.
+	 *
+	 * @param int $month
+	 *
+	 * @return false|static
+	 */
+	public function subMonth($month)
+	{
+		$absolute_months = $this->getAbsoluteMonths();
+
+		$this->sub(\DateInterval::createFromDateString(sprintf('%d month', $month)));
+
+		if( $absolute_months - $month !== $this->getAbsoluteMonths() )
+		{
+			$this->subDays((int) $this->format('d'));
+		}
+
+		return $this;
+	}
+
+	/**
 	 * @return false|static
 	 */
 	public function toEndOfDay()
@@ -159,6 +239,22 @@ class DateTimeImmutable extends \DateTimeImmutable
 	public function toStartOfDay()
 	{
 		return $this->setTime(0, 0, 0);
+	}
+
+	/**
+	 * @return false|static
+	 */
+	public function toStartOfMonth()
+	{
+		return $this->setDate($this->format('Y'), $this->format('m'), 1)->toStartOfDay();
+	}
+
+	/**
+	 * @return false|static
+	 */
+	public function toEndOfMonth()
+	{
+		return $this->setDate($this->format('Y'), $this->format('m'), $this->format('t'))->toEndOfDay();
 	}
 
 }
