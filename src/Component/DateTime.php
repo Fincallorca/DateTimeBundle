@@ -240,4 +240,20 @@ class DateTime extends \DateTime
 		return $this->setTime(0, 0, 0);
 	}
 
+	/**
+	 * @return false|static
+	 */
+	public function toStartOfMonth()
+	{
+		return $this->setDate($this->format('Y'), $this->format('m'), 1)->toStartOfDay();
+	}
+
+	/**
+	 * @return false|static
+	 */
+	public function toEndOfMonth()
+	{
+		return $this->setDate($this->format('Y'), $this->format('m'), $this->format('t'))->toEndOfDay();
+	}
+
 }
