@@ -1,4 +1,4 @@
-## Sequenceable behavior extension for Doctrine2
+## Fincallorca DateTimeBundle
 
 [![Release](https://img.shields.io/badge/Release-0.0.3-blue.svg?style=flat)](https://github.com/Fincallorca/DateTimeBundle/releases/tag/0.0.3)
 [![Packagist](https://img.shields.io/badge/Packagist-0.0.3-blue.svg?style=flat)](https://packagist.org/packages/fincallorca/datetimebundle)
@@ -8,9 +8,10 @@
 
 
 The symfony **DateTimeBundle** provides a couple of functionality:
-1. You can switch between different preconfigured timezone settings for *server*, *database* and *client* easily.
-2. The datetime class is extended by additional useful methods (similar to [https://momentjs.com/](Moment.js)).
-3. The database column type date can be used as primary key.
+1. Save all datetime objects in database as UTC (or in a custom timezone).
+2. You can switch between different preconfigured timezone settings for *server*, *database* and *client* easily.
+3. The datetime class is extended by additional useful methods (similar to [https://momentjs.com/](Moment.js)).
+4. The database column type date can be used as primary key.
 
 ### Table of Contents
 
