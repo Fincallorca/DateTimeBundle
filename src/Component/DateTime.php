@@ -9,9 +9,28 @@ namespace Fincallorca\DateTimeBundle\Component;
  */
 class DateTime extends \DateTime
 {
+	/**
+	 * @var static|null
+	 */
+	protected static $today = null;
 
 	/**
-	 * Returns the current server timestamp.
+	 * Returns the server time of today.
+	 *
+	 * @return static
+	 */
+	public static function today()
+	{
+		if( is_null(self::$today) )
+		{
+			self::$today = self::currentDateTime()->toServerDateTime();
+		}
+
+		return self::$today;
+	}
+
+	/**
+	 * Returns the current server time.
 	 *
 	 * @return static
 	 */
@@ -19,6 +38,30 @@ class DateTime extends \DateTime
 	{
 		$date_time = static::createFromFormat('U.u', sprintf('%.6F', microtime(true)));
 		return $date_time->toServerDateTime();
+	}
+
+	/**
+	 * Parses a string into a new DateTime object according to the specified format.
+	 *
+	 * @param string             $format Format accepted by date().
+	 * @param string             $time   String representing the time.
+	 * @param \DateTimeZone|null $object [optional] A DateTimeZone object representing the desired time zone.
+	 *
+	 * @return static|boolean
+	 * @link http://php.net/manual/en/datetime.createfromformat.php
+	 */
+	public static function createFromFormat($format, $time, $object = null)
+	{
+		$datetime = is_null($object) ?
+			parent::createFromFormat($format, $time) :
+			parent::createFromFormat($format, $time, $object);
+
+		if( !is_object($datetime) )
+		{
+			throw new \InvalidArgumentException('Invalid arguments for createFromFormat().');
+		}
+
+		return static::createFromObject($datetime);
 	}
 
 	/**
@@ -42,30 +85,6 @@ class DateTime extends \DateTime
 		}
 
 		return new static($dateTime);
-	}
-
-	/**
-	 * Parses a string into a new DateTime object according to the specified format.
-	 *
-	 * @param string        $format Format accepted by date().
-	 * @param string        $time   String representing the time.
-	 * @param \DateTimeZone $object A DateTimeZone object representing the desired time zone.
-	 *
-	 * @return static|boolean
-	 * @link http://php.net/manual/en/datetime.createfromformat.php
-	 */
-	public static function createFromFormat($format, $time, $object = null)
-	{
-		$datetime = is_null($object) ?
-			parent::createFromFormat($format, $time) :
-			parent::createFromFormat($format, $time, $object);
-
-		if( !is_object($datetime) )
-		{
-			throw new \InvalidArgumentException('Invalid arguments for createFromFormat().');
-		}
-
-		return static::createFromObject($datetime);
 	}
 
 	/**
