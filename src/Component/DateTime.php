@@ -48,6 +48,7 @@ class DateTime extends \DateTime
 	 * @param \DateTimeZone|null $object [optional] A DateTimeZone object representing the desired time zone.
 	 *
 	 * @return static|boolean
+	 *
 	 * @link http://php.net/manual/en/datetime.createfromformat.php
 	 */
 	public static function createFromFormat($format, $time, $object = null)
@@ -71,7 +72,7 @@ class DateTime extends \DateTime
 	 *
 	 * @return false|static
 	 */
-	public static function createFromObject(\DateTimeInterface $dateTime)
+	public static function createFromObject($dateTime)
 	{
 		if( is_object($dateTime) )
 		{
