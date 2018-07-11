@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [0.0.5] - 2018-07-11
+
+### Fixed
+- Copied missing [DateTimeImmutable](src/Component/DateTimeImmutable.php) methods from [DateTime](src/Component/DateTime.php) class.
+
 ## [0.0.4] - 2018-07-11
 
 ### Fixed
