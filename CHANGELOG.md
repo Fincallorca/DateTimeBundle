@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [0.0.3] - 2018-07-11
+
+### Added
+- Added method [DateTime::today()](src/Component/DateTime.php)
+- Added methods [DateTime::addMonth()](src/Component/DateTime.php) and [DateTime::subMonth()](src/Component/DateTime.php)
+- Added methods [DateTime::toStartOfMonth()](src/Component/DateTime.php) and [DateTime::toEndOfMonth()](src/Component/DateTime.php)
+
 ## [0.0.2] - 2018-04-27
 
 ### Added
