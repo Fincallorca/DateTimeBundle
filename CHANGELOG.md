@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [0.0.6] - 2018-07-18
+
+### Fixed
+- Priority of kernel requests listeners changed to use datetimebundle functionality in other listeners. 
+
 ## [0.0.5] - 2018-07-11
 
 ### Fixed
