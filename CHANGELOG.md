@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [0.0.7] - 2018-09-04
+
+### Added
+- DateTimeBundle now supports Symfony 4 projects.
+
+### Fixed
+- Initialization of server datetime fixed.
+
 ## [0.0.6] - 2018-07-18
 
 ### Fixed
