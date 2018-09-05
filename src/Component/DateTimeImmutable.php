@@ -101,6 +101,14 @@ class DateTimeImmutable extends \DateTimeImmutable
 		return new static($time, $timezone);
 	}
 
+    /**
+     * @return static
+     */
+    public function duplicate()
+    {
+        return clone $this;
+    }
+
 	/**
 	 * @return integer
 	 */

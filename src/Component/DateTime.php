@@ -101,6 +101,14 @@ class DateTime extends \DateTime
 		return new static($time, $timezone);
 	}
 
+    /**
+     * @return static
+     */
+    public function duplicate()
+    {
+        return clone $this;
+    }
+
 	/**
 	 * @return integer
 	 */
