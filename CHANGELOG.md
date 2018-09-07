@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [0.0.10] - 2018-09-07
+
+### Fixed
+- DateTimeBundle now supports Symfony 4 projects.
+
 ## [0.0.9] - 2018-09-06
 
 ### Fixed
@@ -17,9 +22,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Re-added DateTime::duplicate() method.
 
 ## [0.0.7] - 2018-09-04
-
-### Added
-- DateTimeBundle now supports Symfony 4 projects.
 
 ### Fixed
 - Initialization of server datetime fixed.
