@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [0.0.11] - 2018-09-07
+
+### Fixed
+- Removed dispensable `symfony/symfony` project.
+
 ## [0.0.10] - 2018-09-07
 
 ### Fixed
