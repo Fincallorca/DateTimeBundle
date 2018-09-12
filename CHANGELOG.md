@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [0.0.12] - 2018-09-12
+
+### Fixed
+- Second fix of incorrect date instantiation with integer.
+
 ## [0.0.11] - 2018-09-07
 
 ### Fixed

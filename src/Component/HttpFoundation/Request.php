@@ -86,7 +86,7 @@ class Request extends BaseRequest implements RequestDateTimeInterface
 		if( $this->timeStampFromRequest )
 		{
 			$this->dateTime = is_float($this->server->get('REQUEST_TIME_FLOAT')) ?
-				DateTimeImmutable::createFromFormat('U.u', (float) $this->server->get('REQUEST_TIME_FLOAT')) :
+				DateTimeImmutable::createFromFormat('U.u', sprintf('%.6f', $this->server->get('REQUEST_TIME_FLOAT'))) :
 				DateTimeImmutable::create(sprintf("@%d", $this->server->get('REQUEST_TIME')));
 		}
 
