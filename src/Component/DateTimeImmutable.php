@@ -36,7 +36,7 @@ class DateTimeImmutable extends \DateTimeImmutable
 	 */
 	public static function currentDateTime()
 	{
-		$date_time = static::createFromFormat('U.u', sprintf('%.6F', microtime(true)));
+		$date_time = static::createFromFormat('U.u', sprintf('%.6f', microtime(true)));
 		return $date_time->toServerDateTime();
 	}
 
