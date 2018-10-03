@@ -2,6 +2,8 @@
 
 namespace Fincallorca\DateTimeBundle\Doctrine\DBAL\Types;
 
+use Fincallorca\DateTimeBundle\Component\DateTime;
+
 /**
  * Class DateKey
  *
@@ -11,11 +13,11 @@ namespace Fincallorca\DateTimeBundle\Doctrine\DBAL\Types;
  * @package Fincallorca\DateTimeBundle
  * @link    http://stackoverflow.com/a/27138667/4351778
  */
-class DateKey extends \DateTime
+class DateKey extends DateTime
 {
 
 	/**
-	 * @param \DateTime $date_time
+	 * @param DateTime $date_time
 	 *
 	 * @return static
 	 */

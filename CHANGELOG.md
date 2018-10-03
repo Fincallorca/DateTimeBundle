@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [0.0.13] - 2018-10-03
+
+### Fixed
+- DateKey extends [Fincallorca's DateTime](src/Component/DateTime.php) class instead of php native `\DateTime` class
+
 ## [0.0.12] - 2018-09-12
 
 ### Fixed
