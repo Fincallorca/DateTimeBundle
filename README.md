@@ -1,7 +1,7 @@
 ## Fincallorca DateTimeBundle
 
-[![Release](https://img.shields.io/badge/Release-0.0.12-blue.svg?style=flat)](https://github.com/Fincallorca/DateTimeBundle/releases/tag/0.0.12)
-[![Packagist](https://img.shields.io/badge/Packagist-0.0.12-blue.svg?style=flat)](https://packagist.org/packages/fincallorca/datetimebundle)
+[![Release](https://img.shields.io/badge/Release-0.0.13-blue.svg?style=flat)](https://github.com/Fincallorca/DateTimeBundle/releases/tag/0.0.13)
+[![Packagist](https://img.shields.io/badge/Packagist-0.0.13-blue.svg?style=flat)](https://packagist.org/packages/fincallorca/datetimebundle)
 [![LICENSE](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](LICENSE)
 [![Symfony](https://img.shields.io/badge/Symfony-≥3-red.svg?style=flat)](https://symfony.com/)
 [![Doctrine DBAL](https://img.shields.io/badge/Doctrine_DBAL-≥2.5-red.svg?style=flat)](https://github.com/doctrine/dbal)
