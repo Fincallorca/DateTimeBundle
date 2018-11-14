@@ -45,12 +45,12 @@ class Request extends BaseRequest implements RequestDateTimeInterface
 
 		if( $this->server->has('REQUEST_TIME_FLOAT') )
 		{
-			$this->timeStamp            = $this->server->has('REQUEST_TIME_FLOAT');
+			$this->timeStamp            = (int) $this->server->get('REQUEST_TIME_FLOAT');
 			$this->timeStampFromRequest = true;
 		}
 		elseif( $this->server->has('REQUEST_TIME') )
 		{
-			$this->timeStamp            = $this->server->has('REQUEST_TIME');
+			$this->timeStamp            = (int) $this->server->get('REQUEST_TIME');
 			$this->timeStampFromRequest = true;
 		}
 		else
@@ -58,7 +58,7 @@ class Request extends BaseRequest implements RequestDateTimeInterface
 			$this->timeStamp = time();
 		}
 
-		return $this->timeStampFromRequest;
+		return $this->timeStamp;
 	}
 
 	/**
