@@ -6,12 +6,14 @@ use DateTimeZone;
 use Exception;
 use Fincallorca\DateTimeBundle\Component\DateTime;
 use Fincallorca\DateTimeBundle\Component\DateTimeKernel;
+use PHPUnit\Framework\TestCase;
 
-class DateTimeTest extends \PHPUnit_Framework_TestCase
+class DateTimeTest extends TestCase
 {
 
-    public function setUp()
+    public function setUp(): void
     {
+        // server timezone is UTC
         date_default_timezone_set('UTC');
     }
 
@@ -51,29 +53,20 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Failed to parse time string (abc) at position 0 (a): The timezone could not be found in the database
-     */
-    public static function testCreateFromObjectException()
-    {
-        DateTime::createFromObject('abc');
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid arguments for createFromFormat().
-     *
      * @throws Exception
      */
-    public static function testCreateFromFormatException()
+    public function testCreateFromFormatException()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Cannot create an object by DateTime::createFromFormat().');
+
         DateTime::createFromFormat('Y-m-d', 'I do not want to submit valid parameters!');
     }
 
     /**
      * @throws Exception
      */
-    public static function testCreate()
+    public function testCreate()
     {
         self::assertEquals(get_class(DateTime::create()), DateTime::class);
     }
