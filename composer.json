@@ -1,31 +1,33 @@
 {
-  "name": "fincallorca/datetimebundle",
-  "type": "library",
-  "description": "Extends symfony projects with a simplified server-database-client timezone management and additional DateTime methods.",
-  "keywords": [
-    "datetime",
-    "timezones",
-    "symfony",
-    "php"
-  ],
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Falko Matthies",
-      "email": "falko.m@web.de"
+    "name": "fincallorca/datetimebundle",
+    "type": "library",
+    "description": "Extends symfony projects with a simplified server-database-client timezone management and additional DateTime methods.",
+    "keywords": [
+        "datetime",
+        "timezones",
+        "symfony",
+        "php",
+        "database",
+        "utc"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Falko Matthies",
+            "email": "falko.m@web.de"
+        }
+    ],
+    "require": {
+        "php": ">=7.3.0",
+        "symfony/framework-bundle": "^3.1 || ^4.0",
+        "doctrine/dbal": "^2.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.2"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
     }
-  ],
-  "require": {
-    "php": ">=5.5",
-    "symfony/framework-bundle": "^3.1 || ^4.0",
-    "doctrine/dbal": "^2.5"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^5"
-  },
-  "autoload": {
-    "classmap": [
-      "src/"
-    ]
-  }
 }

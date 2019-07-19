@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types=1 );
+
 namespace Fincallorca\DateTimeBundle\Component;
 
 /**
@@ -9,5 +11,5 @@ namespace Fincallorca\DateTimeBundle\Component;
  */
 class DateTimeKernel
 {
-	use DateTimeZoneContainer, DateTimeContainer;
+    use DateTimeZoneContainer, DateTimeContainer;
 }

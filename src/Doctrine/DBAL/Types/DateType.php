@@ -1,8 +1,12 @@
 <?php
 
+declare( strict_types=1 );
+
 namespace Fincallorca\DateTimeBundle\Doctrine\DBAL\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\ConversionException;
+use Exception;
 
 /**
  * Class DateType
@@ -15,25 +19,28 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
  */
 class DateType extends \Doctrine\DBAL\Types\DateType
 {
-	/**
-	 * {@inheritdoc}
-	 */
-	public function convertToPHPValue($value, AbstractPlatform $platform)
-	{
-		$value = parent::convertToPHPValue($value, $platform);
-		if( $value !== null )
-		{
-			$value = DateKey::FromDateTime($value);
-		}
-		return $value;
-	}
+    /**
+     * {@inheritdoc}
+     *
+     * @throws ConversionException
+     * @throws Exception
+     */
+    public function convertToPHPValue($value, AbstractPlatform $platform)
+    {
+        $value = parent::convertToPHPValue($value, $platform);
+        if( $value !== null )
+        {
+            $value = DateKey::FromDateTime($value);
+        }
+        return $value;
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getName()
-	{
-		return 'DateKey';
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'DateKey';
+    }
 
 }

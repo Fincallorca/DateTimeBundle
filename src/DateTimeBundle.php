@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types=1 );
+
 namespace Fincallorca\DateTimeBundle;
 
 use Fincallorca\DateTimeBundle\DependencyInjection\DateTimeBundleExtension;
@@ -12,9 +14,11 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class DateTimeBundle extends Bundle
 {
-
-	public function getContainerExtension()
-	{
-		return new DateTimeBundleExtension();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getContainerExtension()
+    {
+        return new DateTimeBundleExtension();
+    }
 }

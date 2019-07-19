@@ -1,9 +1,12 @@
 <?php
 
+declare( strict_types=1 );
+
 namespace Fincallorca\DateTimeBundle\EventListener;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Types\Type;
+use Exception;
 use Fincallorca\DateTimeBundle\Component\DateTimeImmutable;
 use Fincallorca\DateTimeBundle\Component\DateTimeKernel;
 use Fincallorca\DateTimeBundle\Component\HttpFoundation\RequestDateTimeInterface;
@@ -20,154 +23,162 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 class Initializer
 {
-	/**
-	 * the container is used to get current datetime from the Kernel or the current request
-	 *
-	 * @var ContainerInterface
-	 */
-	protected $container;
+    /**
+     * the container is used to get current datetime from the Kernel or the current request
+     *
+     * @var ContainerInterface
+     */
+    protected $container;
 
-	/**
-	 * DateTimeListener constructor.
-	 *
-	 * @param ContainerInterface $container
-	 *
-	 * @throws DBALException
-	 */
-	public function __construct(ContainerInterface $container)
-	{
-		$this->container = $container;
+    /**
+     * DateTimeListener constructor.
+     *
+     * @param ContainerInterface $container
+     *
+     * @throws DBALException
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
 
-		$this->initializeOverrides();
-	}
+        $this->initializeOverrides();
+    }
 
-	/**
-	 * @throws DBALException
-	 */
-	protected function initializeOverrides()
-	{
-		// save all datetime objects in the configured time zone,
-		// see {@link http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/cookbook/working-with-datetime.html}
-		Type::overrideType('datetime', DateTimeType::class);
-		Type::overrideType('datetimetz', DateTimeType::class);
+    /**
+     * @throws DBALException
+     */
+    protected function initializeOverrides()
+    {
+        // save all datetime objects in the configured time zone,
+        // see {@link http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/cookbook/working-with-datetime.html}
+        Type::overrideType('datetime', DateTimeType::class);
+        Type::overrideType('datetimetz', DateTimeType::class);
 
-		// use type `date` as primary key {@link http://stackoverflow.com/a/27138667/4351778}
-		Type::overrideType('date', DateType::class);
-	}
+        // use type `date` as primary key {@link http://stackoverflow.com/a/27138667/4351778}
+        Type::overrideType('date', DateType::class);
+    }
 
-	/**
-	 * Public method called
-	 * - before controller action and
-	 * - before console command.
-	 *
-	 */
-	public function updateDateTimeKernel()
-	{
-		$this->updateKernelTimeZones();
+    /**
+     * Public method called
+     * - before controller action and
+     * - before console command.
+     *
+     * @throws Exception
+     */
+    public function updateDateTimeKernel()
+    {
+        $this->updateKernelTimeZones();
 
-		if( !$this->updateKernelDateTime() )
-		{
-			throw new \RuntimeException('Unable to initialize the DateTimeKernel object.');
-		}
-	}
+        if( !$this->updateKernelDateTime() )
+        {
+            throw new \RuntimeException('Unable to initialize the DateTimeKernel object.');
+        }
+    }
 
-	/**
-	 * Updates the timezones.
-	 */
-	protected function updateKernelTimeZones()
-	{
-		DateTimeKernel::setTimeZoneDatabase(new \DateTimeZone($this->container->getParameter('datetime.database')));
-		DateTimeKernel::setTimeZoneClient(new \DateTimeZone($this->container->getParameter('datetime.client')));
-	}
+    /**
+     * Updates the timezones.
+     */
+    protected function updateKernelTimeZones()
+    {
+        DateTimeKernel::setTimeZoneDatabase(new \DateTimeZone($this->container->getParameter('datetime.database')));
+        DateTimeKernel::setTimeZoneClient(new \DateTimeZone($this->container->getParameter('datetime.client')));
+    }
 
-	/**
-	 * Prerequisites: Method {@see \Fincallorca\DateTimeBundle\EventListener::updateKernelTimeZones()} must be called before.
-	 *
-	 * @return boolean
-	 */
-	protected function updateKernelDateTime()
-	{
-		return $this->updateKernelDateTimeByRequestTime() || $this->updateKernelDateTimeByKernelStartTime() || $this->updateKernelDateTimeByCurrentServerTime();
-	}
+    /**
+     * Prerequisites: Method {@see \Fincallorca\DateTimeBundle\EventListener::updateKernelTimeZones()} must be called before.
+     *
+     * @return boolean
+     *
+     * @throws Exception
+     */
+    protected function updateKernelDateTime()
+    {
+        return $this->updateKernelDateTimeByRequestTime() || $this->updateKernelDateTimeByKernelStartTime() || $this->updateKernelDateTimeByCurrentServerTime();
+    }
 
-	/**
-	 * @return boolean
-	 */
-	protected function updateKernelDateTimeByRequestTime()
-	{
-		$datetime = false;
+    /**
+     * @return boolean
+     *
+     * @throws Exception
+     */
+    protected function updateKernelDateTimeByRequestTime(): bool
+    {
+        $datetime = false;
 
-		/** @var RequestStack $requestStack */
-		$requestStack = $this->container->get('request_stack');
+        /** @var RequestStack $requestStack */
+        $requestStack = $this->container->get('request_stack');
 
-		if( !is_null($requestStack) && !is_null($requestStack->getMasterRequest()) )
-		{
-			$request = $requestStack->getMasterRequest();
+        if( !is_null($requestStack) && !is_null($requestStack->getMasterRequest()) )
+        {
+            $request = $requestStack->getMasterRequest();
 
-			if( $request instanceof RequestDateTimeInterface && $request->isTimeStampFromRequest() )
-			{
-				$datetime = $request->getDateTime();
-			}
-			elseif( is_numeric($request->server->get('REQUEST_TIME_FLOAT')) )
-			{
-				$datetime = DateTimeImmutable::createFromFormat('U.u', $request->server->get('REQUEST_TIME_FLOAT'));
-			}
-			elseif( is_numeric($request->server->get('REQUEST_TIME')) )
-			{
-				$datetime = DateTimeImmutable::create(sprintf("@%d", $request->server->get('REQUEST_TIME')));
-			}
-		}
+            if( $request instanceof RequestDateTimeInterface && $request->isTimeStampFromRequest() )
+            {
+                $datetime = $request->getDateTime();
+            }
+            elseif( is_numeric($request->server->get('REQUEST_TIME_FLOAT')) )
+            {
+                $datetime = DateTimeImmutable::createFromFormat('U.u', $request->server->get('REQUEST_TIME_FLOAT'));
+            }
+            elseif( is_numeric($request->server->get('REQUEST_TIME')) )
+            {
+                $datetime = DateTimeImmutable::create(sprintf("@%d", $request->server->get('REQUEST_TIME')));
+            }
+        }
 
-		if( $datetime !== false )
-		{
-			DateTimeKernel::setDateTimeServer($datetime);
+        if( $datetime !== false )
+        {
+            DateTimeKernel::setDateTimeServer($datetime);
 
-			return true;
-		}
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * @return boolean
-	 */
-	protected function updateKernelDateTimeByKernelStartTime()
-	{
-		$datetime = false;
+    /**
+     * @return boolean
+     *
+     * @throws Exception
+     */
+    protected function updateKernelDateTimeByKernelStartTime(): bool
+    {
+        $datetime = false;
 
-		/** @var KernelInterface $kernel */
-		$kernel = $this->container->get('kernel');
+        /** @var KernelInterface $kernel */
+        $kernel = $this->container->get('kernel');
 
-		if( !is_null($kernel) && is_numeric($kernel->getStartTime()) )
-		{
-			$datetime = DateTimeImmutable::create(sprintf("@%d", $kernel->getStartTime()));
-		}
+        if( !is_null($kernel) && is_numeric($kernel->getStartTime()) )
+        {
+            $datetime = DateTimeImmutable::create(sprintf("@%d", $kernel->getStartTime()));
+        }
 
-		if( $datetime !== false )
-		{
-			DateTimeKernel::setDateTimeServer($datetime);
+        if( $datetime !== false )
+        {
+            DateTimeKernel::setDateTimeServer($datetime);
 
-			return true;
-		}
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
+    /**
+     * @return boolean
+     *
+     * @throws Exception
+     */
+    protected function updateKernelDateTimeByCurrentServerTime(): bool
+    {
+        $datetime = DateTimeImmutable::create('now', new \DateTimeZone('+00:00'));
 
-	/**
-	 * @return boolean
-	 */
-	protected function updateKernelDateTimeByCurrentServerTime()
-	{
-		$datetime = DateTimeImmutable::create('now', new \DateTimeZone('+00:00'));
+        if( $datetime !== false )
+        {
+            DateTimeKernel::setDateTimeServer($datetime);
 
-		if( $datetime !== false )
-		{
-			DateTimeKernel::setDateTimeServer($datetime);
+            return true;
+        }
 
-			return true;
-		}
-
-		return false;
-	}
+        return false;
+    }
 }

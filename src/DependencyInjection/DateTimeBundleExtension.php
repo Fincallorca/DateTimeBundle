@@ -1,7 +1,10 @@
 <?php
 
+declare( strict_types=1 );
+
 namespace Fincallorca\DateTimeBundle\DependencyInjection;
 
+use Exception;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -16,35 +19,37 @@ use Symfony\Component\Config\FileLocator;
 class DateTimeBundleExtension extends Extension
 {
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getAlias()
-	{
-		return 'datetime';
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getAlias()
+    {
+        return 'datetime';
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function load(array $configs, ContainerBuilder $container)
-	{
-		/** @var LoaderInterface $loader */
-		$loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-		$loader->load('services.yml');
+    /**
+     * @inheritdoc
+     *
+     * @throws Exception
+     */
+    public function load(array $configs, ContainerBuilder $container)
+    {
+        /** @var LoaderInterface $loader */
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader->load('services.yml');
 
-		$configuration = new Configuration();
-		$config        = $this->processConfiguration($configuration, $configs);
+        $configuration = new Configuration();
+        $config        = $this->processConfiguration($configuration, $configs);
 
-		$container->setParameter('datetime.server', date_default_timezone_get());
+        $container->setParameter('datetime.server', date_default_timezone_get());
 
-		$container->setParameter('datetime.database', empty($config[ 'database' ]) ?
-			$container->getParameter('datetime.server') : $config[ 'database' ]
-		);
+        $container->setParameter('datetime.database', empty($config[ 'database' ]) ?
+            $container->getParameter('datetime.server') : $config[ 'database' ]
+        );
 
-		$container->setParameter('datetime.client', empty($config[ 'client' ]) ?
-			$container->getParameter('datetime.server') : $config[ 'client' ]
-		);
-	}
+        $container->setParameter('datetime.client', empty($config[ 'client' ]) ?
+            $container->getParameter('datetime.server') : $config[ 'client' ]
+        );
+    }
 
 }
