@@ -4,5 +4,6 @@ php:
 
 install:
   - composer install
+  - cp phpunit.xml.dist phpunit.xml
 
 script: phpunit --configuration phpunit.xml --coverage-text
