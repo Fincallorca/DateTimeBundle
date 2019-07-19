@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [1.0.0] - 2019-07-19
+
+### Added
+- Enabled continuous integration with [travis-ci](https://travis-ci.org/Fincallorca/DateTimeBundle) and [codecov.io](https://codecov.io/gh/Fincallorca/DateTimeBundle).
+
+### Changed
+- Requirements updated to [PHP v7.3.0](https://www.php.net/ChangeLog-7.php#7.0.0) because of mandatory `DateTime` class adjustments (i.e. [DateTime::createFromImmutable](https://www.php.net/manual/de/datetime.createfromimmutable.php))
+
 ## [0.0.14] - 2018-11-14
 
 ### Fixed
