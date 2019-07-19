@@ -271,7 +271,7 @@ class DateTime extends \DateTime
      */
     public function toStartOfMonth()
     {
-        return $this->setDate($this->format('Y'), $this->format('m'), 1)->toStartOfDay();
+        return $this->setDate((int) $this->format('Y'), (int) $this->format('m'), 1)->toStartOfDay();
     }
 
     /**
@@ -279,7 +279,7 @@ class DateTime extends \DateTime
      */
     public function toEndOfMonth()
     {
-        return $this->setDate($this->format('Y'), $this->format('m'), $this->format('t'))->toEndOfDay();
+        return $this->setDate((int) $this->format('Y'), (int) $this->format('m'), (int) $this->format('t'))->toEndOfDay();
     }
 
 }

@@ -69,4 +69,26 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
         DateTime::createFromFormat('Y-m-d', 'I do not want to submit valid parameters!');
     }
 
+    /**
+     * @throws Exception
+     */
+    public static function testCreate()
+    {
+        self::assertEquals(get_class(DateTime::create()), DateTime::class);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testDuplicate()
+    {
+        $dateTime1 = DateTime::create();
+        $dateTime2 = $dateTime1->duplicate();
+
+        // content of date time equals
+        self::assertEquals($dateTime1->format('U.u'), $dateTime2->format('U.u'));
+        // but objects are not the same
+        self::assertNotSame($dateTime1, $dateTime2);
+    }
+
 }
