@@ -5,6 +5,7 @@ declare( strict_types=1 );
 namespace Fincallorca\DateTimeBundle\Component;
 
 use DateInterval;
+use DateTimeInterface;
 use DateTimeZone;
 use Exception;
 use phpDocumentor\Reflection\DocBlock\Serializer;
@@ -72,7 +73,7 @@ class DateTime extends \DateTime
 
         if( !is_object($datetime) )
         {
-            throw new \InvalidArgumentException('Invalid arguments for createFromFormat().');
+            throw new Exception('Cannot create an object by DateTime::createFromFormat().');
         }
 
         return static::createFromObject($datetime);
@@ -81,26 +82,21 @@ class DateTime extends \DateTime
     /**
      * Copies and casts the submitted datetime object to a new DateTime object.
      *
-     * @param \DateTimeInterface $dateTime the source object
+     * @param DateTimeInterface $dateTime the source object
      *
      * @return false|static
      *
      * @throws Exception
      */
-    public static function createFromObject($dateTime)
+    public static function createFromObject(DateTimeInterface $dateTime)
     {
-        if( is_object($dateTime) )
-        {
-            $class_name = static::class;
+        $class_name = static::class;
 
-            $parts      = explode(':', serialize($dateTime));
-            $parts[ 1 ] = strlen($class_name);
-            $parts[ 2 ] = sprintf('"%s"', $class_name);
+        $parts      = explode(':', serialize($dateTime));
+        $parts[ 1 ] = strlen($class_name);
+        $parts[ 2 ] = sprintf('"%s"', $class_name);
 
-            return unserialize(implode(':', $parts));
-        }
-
-        return new static($dateTime);
+        return unserialize(implode(':', $parts));
     }
 
     /**

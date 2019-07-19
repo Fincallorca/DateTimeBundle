@@ -71,7 +71,7 @@ class DateTimeImmutable extends \DateTimeImmutable
 
         if( !is_object($datetime) )
         {
-            throw new \InvalidArgumentException('Invalid arguments for createFromFormat().');
+            throw new Exception('Cannot create an object by DateTime::createFromFormat().');
         }
 
         return static::createFromObject($datetime);
