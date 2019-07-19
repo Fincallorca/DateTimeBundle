@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types=1 );
+
 namespace Fincallorca\DateTimeBundle\Doctrine\DBAL\Types;
 
 use Fincallorca\DateTimeBundle\Component\DateTime;
@@ -17,49 +19,49 @@ use Fincallorca\DateTimeBundle\Component\DateTimeKernel;
 class DateTimeType extends BaseDateTimeType
 {
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function convertToDatabaseValue($value, AbstractPlatform $platform)
-	{
-		if( $value instanceof \DateTime )
-		{
-			$value = DateTime::createFromObject($value);
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    {
+        if( $value instanceof \DateTime )
+        {
+            $value = DateTime::createFromObject($value);
+        }
 
-		if( $value instanceof DateTime )
-		{
-			$value->toDatabaseDateTime();
-		}
+        if( $value instanceof DateTime )
+        {
+            $value->toDatabaseDateTime();
+        }
 
-		return parent::convertToDatabaseValue($value, $platform);
-	}
+        return parent::convertToDatabaseValue($value, $platform);
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function convertToPHPValue($value, AbstractPlatform $platform)
-	{
-		if( null === $value || $value instanceof \DateTime )
-		{
-			return $value;
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function convertToPHPValue($value, AbstractPlatform $platform)
+    {
+        if( null === $value || $value instanceof \DateTime )
+        {
+            return $value;
+        }
 
-		$converted = DateTime::createFromFormat(
-			$platform->getDateTimeFormatString(),
-			$value,
-			DateTimeKernel::getTimeZoneDatabase()
-		)->toServerDateTime();
+        $converted = DateTime::createFromFormat(
+            $platform->getDateTimeFormatString(),
+            $value,
+            DateTimeKernel::getTimeZoneDatabase()
+        )->toServerDateTime();
 
-		if( !$converted )
-		{
-			throw ConversionException::conversionFailedFormat(
-				$value,
-				$this->getName(),
-				$platform->getDateTimeFormatString()
-			);
-		}
+        if( !$converted )
+        {
+            throw ConversionException::conversionFailedFormat(
+                $value,
+                $this->getName(),
+                $platform->getDateTimeFormatString()
+            );
+        }
 
-		return $converted;
-	}
+        return $converted;
+    }
 }

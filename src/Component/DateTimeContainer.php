@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types=1 );
+
 namespace Fincallorca\DateTimeBundle\Component;
 
 /**
@@ -10,40 +12,40 @@ namespace Fincallorca\DateTimeBundle\Component;
 trait DateTimeContainer
 {
 
-	/**
-	 * @var DateTimeImmutable[]
-	 */
-	protected static $dateTimeServer = array();
+    /**
+     * @var DateTimeImmutable[]
+     */
+    protected static $dateTimeServer = array();
 
-	/**
-	 *
-	 * @return DateTimeImmutable
-	 */
-	public static function getDateTimeServer()
-	{
-		$serverTimeZone = DateTimeKernel::getTimeZoneServer();
+    /**
+     *
+     * @return DateTimeImmutable
+     */
+    public static function getDateTimeServer(): DateTimeImmutable
+    {
+        $serverTimeZone = DateTimeKernel::getTimeZoneServer();
 
-		$timezoneKey = crc32($serverTimeZone->getName());
+        $timezoneKey = crc32($serverTimeZone->getName());
 
-		if( array_key_exists($timezoneKey, self::$dateTimeServer) )
-		{
-			return self::$dateTimeServer[ $timezoneKey ];
-		}
+        if( array_key_exists($timezoneKey, self::$dateTimeServer) )
+        {
+            return self::$dateTimeServer[ $timezoneKey ];
+        }
 
-		$dateTimeImmutable = array_slice(self::$dateTimeServer, 0, 1)[0];
+        $dateTimeImmutable = array_slice(self::$dateTimeServer, 0, 1)[ 0 ];
 
-		self::$dateTimeServer[ $timezoneKey ] = $dateTimeImmutable->setTimezone($serverTimeZone);
+        self::$dateTimeServer[ $timezoneKey ] = $dateTimeImmutable->setTimezone($serverTimeZone);
 
-		return self::$dateTimeServer[ $timezoneKey ];
-	}
+        return self::$dateTimeServer[ $timezoneKey ];
+    }
 
-	/**
-	 * @param DateTimeImmutable $dateTime
-	 */
-	public static function setDateTimeServer($dateTime)
-	{
-		$timezoneKey = crc32($dateTime->getTimezone()->getName());
+    /**
+     * @param DateTimeImmutable $dateTime
+     */
+    public static function setDateTimeServer(DateTimeImmutable $dateTime)
+    {
+        $timezoneKey = crc32($dateTime->getTimezone()->getName());
 
-		self::$dateTimeServer[ $timezoneKey ] = $dateTime;
-	}
+        self::$dateTimeServer[ $timezoneKey ] = $dateTime;
+    }
 }
