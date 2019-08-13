@@ -4,6 +4,7 @@ declare( strict_types=1 );
 
 namespace Fincallorca\DateTimeBundle\Doctrine\DBAL\Types;
 
+use Exception;
 use Fincallorca\DateTimeBundle\Component\DateTime;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
@@ -14,6 +15,7 @@ use Fincallorca\DateTimeBundle\Component\DateTimeKernel;
  * Class UTCDateTimeType is used to save all datetime values in database as UTC.
  *
  * @package Fincallorca\DateTimeBundle
+ *
  * @link    http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/cookbook/working-with-datetime.html
  */
 class DateTimeType extends BaseDateTimeType
@@ -21,14 +23,18 @@ class DateTimeType extends BaseDateTimeType
 
     /**
      * {@inheritdoc}
+     *
+     * @throws ConversionException
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        if( $value instanceof \DateTime )
+        // create a Fincallorca DateTime object (if i.e. a \DateTime was submitted)
+        if( !$value instanceof DateTime )
         {
             $value = DateTime::createFromObject($value);
         }
 
+        // convert to database date time zone
         if( $value instanceof DateTime )
         {
             $value->toDatabaseDateTime();
@@ -39,14 +45,31 @@ class DateTimeType extends BaseDateTimeType
 
     /**
      * {@inheritdoc}
+     *
+     * @throws Exception
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        if( null === $value || $value instanceof \DateTime )
+        // return null value
+        if( is_null($value) )
         {
             return $value;
         }
 
+        // return already converted value
+        if( $value instanceof DateTime )
+        {
+            return $value;
+        }
+
+        // if value is a datetime but not a Fincallorca DateTime object
+        // return the object as a Fincallorca DateTime object
+        if( $value instanceof \DateTime )
+        {
+            return DateTime::createFromObject($value);
+        }
+
+        // convert value to a DateTime object
         $converted = DateTime::createFromFormat(
             $platform->getDateTimeFormatString(),
             $value,
