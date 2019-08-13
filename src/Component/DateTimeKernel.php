@@ -10,7 +10,18 @@ use Fincallorca\DateTimeBundle\DateTimeBundle;
 use Fincallorca\DateTimeBundle\EventListener\Initializer;
 
 /**
- * Class DateTimeKernel
+ * The class {@see \Fincallorca\DateTimeBundle\Component\DateTimeKernel} is neccessary to access
+ * - all enabled timezones and
+ * - the current server date
+ * everywhere in your project.
+ *
+ * The listener {@see \Fincallorca\DateTimeBundle\EventListener\Initializer} tries to initialize all
+ * timezones (server, database,client) by
+ * 1. the http request or
+ * 2. by the cli command
+ * but in some cases you don't have neither a http request object nor a command request
+ * (i.e. by calling `doctrine:migration:migrate`).
+ * Thats why it is necessary to include a separate kernel class to provide the timezones in every case.
  *
  * @package Fincallorca\DateTimeBundle
  */
