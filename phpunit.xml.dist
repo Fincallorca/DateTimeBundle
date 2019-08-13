@@ -5,6 +5,7 @@
 
     <php>
         <ini name="error_reporting" value="-1"/>
+        <env name="KERNEL_CLASS" value="\Fincallorca\DateTimeBundle\Test\TestKernel"/>
     </php>
 
     <testsuites>

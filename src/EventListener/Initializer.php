@@ -17,7 +17,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
- * Class DateTimeListener
+ * The {@see \Fincallorca\DateTimeBundle\EventListener\DateTimeListener} tries to initialize the
+ * {@see \Fincallorca\DateTimeBundle\Component\DateTimeKernel} kernel class. The approach is to
+ * initialize all time zones and the immutable server date by
+ * 1. try to get the date time from the current request
+ * 2. if not possible, try to get the date time from the initialized kernel
+ * 3. if not possible, try to initialize the date time with the current time.
  *
  * @package Fincallorca\DateTimeBundle
  */
@@ -118,7 +123,7 @@ class Initializer
             }
             elseif( is_numeric($request->server->get('REQUEST_TIME_FLOAT')) )
             {
-                $datetime = DateTimeImmutable::createFromFormat('U.u', $request->server->get('REQUEST_TIME_FLOAT'));
+                $datetime = DateTimeImmutable::createFromFormat('U.u', (string) $request->server->get('REQUEST_TIME_FLOAT'));
             }
             elseif( is_numeric($request->server->get('REQUEST_TIME')) )
             {

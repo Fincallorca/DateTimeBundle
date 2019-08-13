@@ -6,14 +6,15 @@ namespace Fincallorca\DateTimeBundle\DependencyInjection;
 
 use Exception;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\Config\FileLocator;
 
 /**
  *
  * @package Fincallorca\DateTimeBundle
+ *
  * @link    http://symfony.com/doc/current/bundles/extension.html
  */
 class DateTimeBundleExtension extends Extension
@@ -43,11 +44,11 @@ class DateTimeBundleExtension extends Extension
 
         $container->setParameter('datetime.server', date_default_timezone_get());
 
-        $container->setParameter('datetime.database', empty($config[ 'database' ]) ?
+        $container->setParameter('datetime.database', is_null($config[ 'database' ]) ?
             $container->getParameter('datetime.server') : $config[ 'database' ]
         );
 
-        $container->setParameter('datetime.client', empty($config[ 'client' ]) ?
+        $container->setParameter('datetime.client', is_null($config[ 'client' ]) ?
             $container->getParameter('datetime.server') : $config[ 'client' ]
         );
     }

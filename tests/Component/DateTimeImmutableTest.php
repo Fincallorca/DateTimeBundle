@@ -4,16 +4,16 @@ namespace Fincallorca\DateTimeBundle\Test\Component;
 
 use DateTimeZone;
 use Exception;
-use Fincallorca\DateTimeBundle\Component\DateTime;
+use Fincallorca\DateTimeBundle\Component\DateTimeImmutable;
 use Fincallorca\DateTimeBundle\Component\DateTimeKernel;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class DateTimeTest
+ * Class DateTimeImmutableTest
  *
  * @package Fincallorca\DateTimeBundle
  */
-class DateTimeTest extends TestCase
+class DateTimeImmutableTest extends TestCase
 {
     /**
      * {@inheritDoc}
@@ -24,7 +24,7 @@ class DateTimeTest extends TestCase
         date_default_timezone_set('UTC');
         // database timezone is UTC
         DateTimeKernel::setTimeZoneDatabase(new DateTimeZone('UTC'));
-        // client timezone is 'Europe/London'
+        // cline timezone is 'Europe/London'
         DateTimeKernel::setTimeZoneClient(new DateTimeZone('Europe/London'));
     }
 
@@ -38,7 +38,7 @@ class DateTimeTest extends TestCase
         $today = new \DateTime('now');
         $today->setTimezone(new DateTimeZone('UTC'));
 
-        self::assertEquals($today->format('Y-m-d'), DateTime::today()->format('Y-m-d'));
+        self::assertEquals($today->format('Y-m-d'), DateTimeImmutable::today()->format('Y-m-d'));
     }
 
     /**
@@ -48,8 +48,8 @@ class DateTimeTest extends TestCase
      */
     public static function testCurrentDateTime()
     {
-        $dateTime1 = DateTime::currentDateTime();
-        $dateTime2 = DateTime::currentDateTime();
+        $dateTime1 = DateTimeImmutable::currentDateTime();
+        $dateTime2 = DateTimeImmutable::currentDateTime();
         self::assertNotEquals($dateTime1, $dateTime2);
 
         $today = new \DateTime('now');
@@ -61,13 +61,13 @@ class DateTimeTest extends TestCase
      */
     public function testToServerDateTime()
     {
-        $dateTimeOrigin = DateTime::create('2019-07-19 17:54:03', new DateTimeZone('Europe/Berlin'));
+        $dateTimeOrigin = DateTimeImmutable::create('2019-07-19 17:54:03', new DateTimeZone('Europe/Berlin'));
         $dateTimeServer = $dateTimeOrigin->toServerDateTime();
 
         // check for "same" object
-        self::assertSame($dateTimeOrigin, $dateTimeServer);
-        self::assertInstanceOf(DateTime::class, $dateTimeOrigin);
-        self::assertInstanceOf(DateTime::class, $dateTimeServer);
+        self::assertNotSame($dateTimeOrigin, $dateTimeServer);
+        self::assertInstanceOf(DateTimeImmutable::class, $dateTimeOrigin);
+        self::assertInstanceOf(DateTimeImmutable::class, $dateTimeServer);
 
         // Berlin has +2 hours difference (in summer) towards UTC
         self::assertEquals('2019-07-19 15:54:03', $dateTimeServer->format('Y-m-d H:i:s'));
@@ -78,13 +78,13 @@ class DateTimeTest extends TestCase
      */
     public function testToDatabaseDateTime()
     {
-        $dateTimeOrigin   = DateTime::create('2019-12-07 04:19:22', new DateTimeZone('Asia/Bangkok'));
+        $dateTimeOrigin   = DateTimeImmutable::create('2019-12-07 04:19:22', new DateTimeZone('Asia/Bangkok'));
         $dateTimeDatabase = $dateTimeOrigin->toDatabaseDateTime();
 
         // check for "same" object
-        self::assertSame($dateTimeOrigin, $dateTimeDatabase);
-        self::assertInstanceOf(DateTime::class, $dateTimeOrigin);
-        self::assertInstanceOf(DateTime::class, $dateTimeDatabase);
+        self::assertNotSame($dateTimeOrigin, $dateTimeDatabase);
+        self::assertInstanceOf(DateTimeImmutable::class, $dateTimeOrigin);
+        self::assertInstanceOf(DateTimeImmutable::class, $dateTimeDatabase);
 
         // Bangkok has +7 hours difference (in winter) towards UTC
         self::assertEquals('2019-12-06 21:19:22', $dateTimeDatabase->format('Y-m-d H:i:s'));
@@ -96,13 +96,13 @@ class DateTimeTest extends TestCase
     public function testToClientDateTime()
     {
         // some inserted time is in timezone 'America/New_York'
-        $dateTimeOrigin = DateTime::create('2019-11-19 16:17:35', new DateTimeZone('America/New_York'));
+        $dateTimeOrigin = DateTimeImmutable::create('2019-11-19 16:17:35', new DateTimeZone('America/New_York'));
         $dateTimeClient = $dateTimeOrigin->toClientDateTime();
 
         // check for "same" object
-        self::assertSame($dateTimeOrigin, $dateTimeClient);
-        self::assertInstanceOf(DateTime::class, $dateTimeOrigin);
-        self::assertInstanceOf(DateTime::class, $dateTimeClient);
+        self::assertNotSame($dateTimeOrigin, $dateTimeClient);
+        self::assertInstanceOf(DateTimeImmutable::class, $dateTimeOrigin);
+        self::assertInstanceOf(DateTimeImmutable::class, $dateTimeClient);
 
         // London has -5 hours difference towards New York
         self::assertEquals('2019-11-19 21:17:35', $dateTimeClient->format('Y-m-d H:i:s'));

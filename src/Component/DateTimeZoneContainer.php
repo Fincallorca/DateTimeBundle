@@ -13,6 +13,10 @@ use DateTimeZone;
  */
 trait DateTimeZoneContainer
 {
+    /**
+     * @var DateTimeZone[]
+     */
+    protected static $timeZones = array();
 
     /**
      * @var DateTimeZone[]
@@ -20,34 +24,71 @@ trait DateTimeZoneContainer
     protected static $timeZonesServer = array();
 
     /**
-     * @var DateTimeZone
+     * @var DateTimeZone|null
      */
     protected static $timeZoneDatabase = null;
 
     /**
-     * @var DateTimeZone
+     * @var DateTimeZone|null
      */
     protected static $timeZoneClient = null;
 
     /**
+     * Returns `true` if the submitted string is a valid timezone name, else `false`.
      *
-     * @return DateTimeZone
+     * @param string $timeZone the name of the timezone
+     *
+     * @return boolean
+     *
+     * @link http://us.php.net/manual/en/timezones.others.php
      */
-    public static function getTimeZoneServer(): DateTimeZone
+    public static function isValidTimezone(string $timeZone): bool
     {
-        $timezoneKey = crc32(date_default_timezone_get());
-
-        if( array_key_exists($timezoneKey, self::$timeZonesServer) )
-        {
-            return self::$timeZonesServer[ $timezoneKey ];
-        }
-
-        self::$timeZonesServer[ $timezoneKey ] = new DateTimeZone(date_default_timezone_get());
-
-        return self::$timeZonesServer[ $timezoneKey ];
+        return in_array($timeZone, DateTimeZone::listIdentifiers());
     }
 
     /**
+     * Returns the timezone object of the passed timezone name.
+     *
+     * @param string $timeZone the name of the timezone
+     *
+     * @return DateTimeZone
+     */
+    public static function getTimeZoneByName(string $timeZone): DateTimeZone
+    {
+        if( !self::isValidTimezone($timeZone) )
+        {
+            throw new \UnexpectedValueException(sprintf('Unable instantiate the time zone of "%s"', $timeZone));
+        }
+
+        $timezoneKey = crc32($timeZone);
+
+        if( array_key_exists($timezoneKey, self::$timeZonesServer) )
+        {
+            return self::$timeZones[ $timezoneKey ];
+        }
+
+        self::$timeZones[ $timezoneKey ] = new DateTimeZone($timeZone);
+
+        return self::$timeZones[ $timezoneKey ];
+    }
+
+    /**
+     * Returns the default server timezone.
+     *
+     * To set the default server timezone use {@see \date_default_timezone_get()} or the related `php.ini` configuration.
+     *
+     * @return DateTimeZone
+     *
+     * @see \date_default_timezone_get()
+     */
+    public static function getTimeZoneServer(): DateTimeZone
+    {
+        return self::getTimeZoneByName(date_default_timezone_get());
+    }
+
+    /**
+     * Returns the default database timezone.
      *
      * @return DateTimeZone
      */
@@ -57,7 +98,11 @@ trait DateTimeZoneContainer
     }
 
     /**
+     * Sets the default database timezone.
+     *
      * @param DateTimeZone $dateTimeZoneDatabase
+     *
+     * @internal Use only in the event listener {@see \Fincallorca\DateTimeBundle\EventListener\Initializer} or in tests!
      */
     public static function setTimeZoneDatabase(DateTimeZone $dateTimeZoneDatabase)
     {
@@ -65,6 +110,8 @@ trait DateTimeZoneContainer
     }
 
     /**
+     * Returns the client's default timezone.
+     *
      * @return DateTimeZone
      */
     public static function getTimeZoneClient(): DateTimeZone
@@ -73,6 +120,8 @@ trait DateTimeZoneContainer
     }
 
     /**
+     * Sets the client's default timezone.
+     *
      * @param DateTimeZone $dateTimeZoneClient
      */
     public static function setTimeZoneClient(DateTimeZone $dateTimeZoneClient)
