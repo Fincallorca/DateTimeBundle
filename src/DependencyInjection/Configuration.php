@@ -5,6 +5,7 @@ declare( strict_types=1 );
 namespace Fincallorca\DateTimeBundle\DependencyInjection;
 
 use DateTimeZone;
+use Fincallorca\DateTimeBundle\Component\DateTimeZoneContainer;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -15,11 +16,6 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * @var string[]
-     */
-    protected $timezones = null;
-
     /**
      * {@inheritdoc}
      */
@@ -33,7 +29,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('database')
                     ->info('The timezone of the datetime values which are saved and will be saved in the database. If empty, the server timezone (see `date_default_timezone_get`) wil be choosen.')
-                    ->defaultValue('')
+                    ->defaultNull()
                     ->cannotBeEmpty()
                     ->validate()
                         ->ifTrue(function ($_value) { return $this->isInvalidTimezone($_value); })
@@ -42,7 +38,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->scalarNode('client')
                     ->info('The timezone of the client. If not set, the value of `date_default_timezone_get` will be chosen.')
-                    ->defaultValue('')
+                    ->defaultNull()
                     ->cannotBeEmpty()
                     ->validate()
                         ->ifTrue(function ($_value) { return $this->isInvalidTimezone($_value); })
@@ -58,20 +54,15 @@ class Configuration implements ConfigurationInterface
     /**
      * Returns `true` if the submitted string is *not* a valid timezone, else `false`.
      *
-     * @param string $timezone
+     * @param string|null $timezoneName
      *
      * @return boolean
      *
      * @link http://us.php.net/manual/en/timezones.others.php
      *
      */
-    protected function isInvalidTimezone($timezone): bool
+    protected function isInvalidTimezone(?string $timezoneName): bool
     {
-        if( is_null($this->timezones) )
-        {
-            $this->timezones = DateTimeZone::listIdentifiers();
-        }
-
-        return empty($timezone) ? false : ( !in_array($timezone, $this->timezones) );
+        return is_null($timezoneName) ? false : ( !DateTimeZoneContainer::isValidTimezone($timezoneName) );
     }
 }
