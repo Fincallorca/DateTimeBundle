@@ -6,8 +6,8 @@ namespace Fincallorca\DateTimeBundle\DependencyInjection;
 
 use Exception;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\Config\FileLocator;
 

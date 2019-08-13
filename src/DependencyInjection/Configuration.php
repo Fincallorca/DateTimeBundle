@@ -25,11 +25,10 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode    = $treeBuilder->root('datetime');
+        $treeBuilder = new TreeBuilder('datetime');
 
         // @formatter:off
-        $rootNode
+        $treeBuilder->getRootNode()
             ->info('DateTime Bundle Configuration')
             ->children()
                 ->scalarNode('database')
@@ -38,16 +37,16 @@ class Configuration implements ConfigurationInterface
                     ->cannotBeEmpty()
                     ->validate()
                         ->ifTrue(function ($_value) { return $this->isInvalidTimezone($_value); })
-                        ->thenInvalid('Invalid timezone "%s" for config parameter datetime.database set.')
+                        ->thenInvalid('Invalid timezone "%s" for config parameter "datetime.client" set. Please check https://www.php.net/manual/en/timezones.america.php.')
                     ->end()
                 ->end()
                 ->scalarNode('client')
-                    ->info('The timezone of the client. If not set, the value of `date_default_timezone_get` will be choosen.')
+                    ->info('The timezone of the client. If not set, the value of `date_default_timezone_get` will be chosen.')
                     ->defaultValue('')
                     ->cannotBeEmpty()
                     ->validate()
                         ->ifTrue(function ($_value) { return $this->isInvalidTimezone($_value); })
-                        ->thenInvalid('Invalid timezone "%s" for config parameter datetime.client set.')
+                        ->thenInvalid('Invalid timezone "%s" for config parameter "datetime.client" set. Please check https://www.php.net/manual/en/timezones.america.php.')
                     ->end()
                 ->end()
             ->end();
