@@ -1,7 +1,8 @@
 services:
-    Fincallorca\DateTimeBundle\EventListener\Initializer:
-        class: Fincallorca\DateTimeBundle\EventListener\Initializer
-        arguments: ["@service_container"]
-        tags:
-            - { name: kernel.event_listener, event: kernel.request,  method: updateDateTimeKernel, priority: 512 }
-            - { name: kernel.event_listener, event: console.command, method: updateDateTimeKernel, priority: 512 }
+  Fincallorca\DateTimeBundle\EventListener\Initializer:
+    class: Fincallorca\DateTimeBundle\EventListener\Initializer
+    arguments: ["@service_container"]
+    tags:
+      - { name: kernel.event_listener, event: kernel.request,  method: updateDateTimeKernel, priority: 512 }
+      - { name: kernel.event_listener, event: console.command, method: updateDateTimeKernel, priority: 512 }
+    public: false
