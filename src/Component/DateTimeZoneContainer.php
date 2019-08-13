@@ -30,8 +30,13 @@ trait DateTimeZoneContainer
     protected static $timeZoneClient = null;
 
     /**
+     * Returns the default server timezone.
+     *
+     * To set the default server timezone use {@see \date_default_timezone_get()} or the related `php.ini` configuration.
      *
      * @return DateTimeZone
+     *
+     * @see \date_default_timezone_get()
      */
     public static function getTimeZoneServer(): DateTimeZone
     {
@@ -48,6 +53,7 @@ trait DateTimeZoneContainer
     }
 
     /**
+     * Returns the default database timezone.
      *
      * @return DateTimeZone
      */
@@ -57,6 +63,8 @@ trait DateTimeZoneContainer
     }
 
     /**
+     * Sets the default database timezone.
+     *
      * @param DateTimeZone $dateTimeZoneDatabase
      */
     public static function setTimeZoneDatabase(DateTimeZone $dateTimeZoneDatabase)
@@ -65,6 +73,8 @@ trait DateTimeZoneContainer
     }
 
     /**
+     * Returns the client's default timezone.
+     *
      * @return DateTimeZone
      */
     public static function getTimeZoneClient(): DateTimeZone
@@ -73,6 +83,8 @@ trait DateTimeZoneContainer
     }
 
     /**
+     * Sets the client's default timezone.
+     *
      * @param DateTimeZone $dateTimeZoneClient
      */
     public static function setTimeZoneClient(DateTimeZone $dateTimeZoneClient)

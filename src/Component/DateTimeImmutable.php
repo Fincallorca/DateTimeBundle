@@ -4,8 +4,6 @@ declare( strict_types=1 );
 
 namespace Fincallorca\DateTimeBundle\Component;
 
-use DateTimeInterface;
-use DateTimeZone;
 use Exception;
 
 /**
@@ -13,12 +11,23 @@ use Exception;
  *
  * @package Fincallorca\DateTimeBundle
  */
-class DateTimeImmutable extends \DateTimeImmutable
+class DateTimeImmutable extends \ExtDateTime\DateTimeImmutable
 {
     /**
-     * @var static|null
+     * {@inheritDoc}
+     *
+     * Overrides {@see \ExtDateTime\DateTimeImmutable::current()} to change the timezone to server time.
+     *
+     * @return static
+     *
+     * @throws Exception
      */
-    protected static $today = null;
+    public static function current()
+    {
+        /** @var DateTimeImmutable $dateTime */
+        $dateTime = parent::current();
+        return $dateTime->toServerDateTime();
+    }
 
     /**
      * Returns the server time of today.
@@ -26,114 +35,35 @@ class DateTimeImmutable extends \DateTimeImmutable
      * @return static
      *
      * @throws Exception
+     *
+     * @deprecated Please use {@see \Fincallorca\DateTimeBundle\Component\DateTimeImmutable::current()} instead. This function will be removed in v2.0.
+     *
+     * @todo remove in v2.0
      */
     public static function today()
     {
-        if( is_null(self::$today) )
-        {
-            self::$today = self::currentDateTime()->toServerDateTime();
-        }
-
-        return self::$today;
+        return static::current();
     }
 
     /**
-     * Returns the current server timestamp.
+     * Returns the current server time.
      *
      * @return static
      *
      * @throws Exception
+     *
+     * @deprecated Please use {@see \Fincallorca\DateTimeBundle\Component\DateTimeImmutable::current()} instead. This function will be removed in v2.0.
+     *
+     * @todo remove in v2.0
      */
     public static function currentDateTime()
     {
-        $date_time = static::createFromFormat('U.u', sprintf('%.6f', microtime(true)));
-        return $date_time->toServerDateTime();
+        return static::current();
     }
 
     /**
-     * Parses a string into a new DateTime object according to the specified format.
+     * Changes the timezone to the server's timezone.
      *
-     * @param string            $format   Format accepted by date().
-     * @param string            $time     String representing the time.
-     * @param DateTimeZone|null $timezone [optional] A DateTimeZone object representing the desired time zone.
-     *
-     * @return static|boolean
-     *
-     * @throws Exception
-     *
-     * @link http://php.net/manual/en/datetime.createfromformat.php
-     */
-    public static function createFromFormat($format, $time, DateTimeZone $timezone = null)
-    {
-        $datetime = is_null($timezone) ?
-            parent::createFromFormat($format, $time) :
-            parent::createFromFormat($format, $time, $timezone);
-
-        if( !is_object($datetime) )
-        {
-            throw new Exception('Cannot create an object by DateTime::createFromFormat().');
-        }
-
-        return static::createFromObject($datetime);
-    }
-
-    /**
-     * Copies and casts the submitted datetime object to a new DateTimeImmutable object.
-     *
-     * @param DateTimeInterface $dateTime the source object
-     *
-     * @return false|static
-     *
-     * @throws Exception
-     */
-    public static function createFromObject($dateTime)
-    {
-        if( is_object($dateTime) )
-        {
-            $class_name = static::class;
-
-            $parts      = explode(':', serialize($dateTime));
-            $parts[ 1 ] = strlen($class_name);
-            $parts[ 2 ] = sprintf('"%s"', $class_name);
-
-            return unserialize(implode(':', $parts));
-        }
-
-        return new static($dateTime);
-    }
-
-    /**
-     * Returns a new DateTimeImmutable object.
-     *
-     * @param string       $time
-     * @param DateTimeZone $timezone
-     *
-     * @return false|static
-     *
-     * @throws Exception
-     */
-    public static function create($time = 'now', DateTimeZone $timezone = null)
-    {
-        return new static($time, $timezone);
-    }
-
-    /**
-     * @return static
-     */
-    public function duplicate()
-    {
-        return clone $this;
-    }
-
-    /**
-     * @return integer
-     */
-    protected function getAbsoluteMonths()
-    {
-        return intval($this->format('Y')) * 12 + intval($this->format('m'));
-    }
-
-    /**
      * @return static
      */
     public function toServerDateTime()
@@ -142,6 +72,8 @@ class DateTimeImmutable extends \DateTimeImmutable
     }
 
     /**
+     * Changes the timezone to the database's timezone.
+     *
      * @return static
      */
     public function toDatabaseDateTime()
@@ -150,135 +82,13 @@ class DateTimeImmutable extends \DateTimeImmutable
     }
 
     /**
+     * Changes the timezone to the client's timezone.
+     *
      * @return static
      */
     public function toClientDateTime()
     {
         return $this->setTimezone(DateTimeKernel::getTimeZoneClient());
-    }
-
-    /**
-     * @param integer $hours
-     *
-     * @return static
-     */
-    public function addHours(int $hours)
-    {
-        return $this->add(\DateInterval::createFromDateString(sprintf('%d hour', $hours)));
-    }
-
-    /**
-     * @param integer $hours
-     *
-     * @return static
-     */
-    public function subHours(int $hours)
-    {
-        return $this->addHours(0 - $hours);
-    }
-
-    /**
-     * @param integer $days
-     *
-     * @return static
-     */
-    public function addDays(int $days)
-    {
-        return $this->add(\DateInterval::createFromDateString(sprintf('%d day', $days)));
-    }
-
-    /**
-     * @param integer $days
-     *
-     * @return static
-     */
-    public function subDays(int $days)
-    {
-        return $this->addDays(0 - $days);
-    }
-
-    /**
-     * Adds an amount of months to the current date.
-     *
-     * **ATTENTION**: If the current date is the 31/30/29 and the target month has less days then the current month, the day will be set to the last
-     * day of the target month.
-     *
-     * Example: Current date is '2017-01-30 17:00:00' and you want to add '1 month', then the result will be '2017-02-28 17:00:00'.
-     *
-     * @param integer $month
-     *
-     * @return false|static
-     */
-    public function addMonth(int $month)
-    {
-        $absolute_months = $this->getAbsoluteMonths();
-
-        $this->add(\DateInterval::createFromDateString(sprintf('%d month', $month)));
-
-        if( $absolute_months + $month !== $this->getAbsoluteMonths() )
-        {
-            $this->subDays((int) $this->format('d'));
-        }
-
-        return $this;
-    }
-
-    /**
-     * Subs an amount of months from the current date.
-     *
-     * **ATTENTION**: If the current date is the 31/30/29 and the target month has less days then the current month, the day will be set to the last
-     * day of the target month.
-     *
-     * Example: Current date is '2017-03-31 17:00:00' and you want to sub '1 month', then the result will be '2017-02-28 17:00:00'.
-     *
-     * @param int $month
-     *
-     * @return false|static
-     */
-    public function subMonth(int $month)
-    {
-        $absolute_months = $this->getAbsoluteMonths();
-
-        $this->sub(\DateInterval::createFromDateString(sprintf('%d month', $month)));
-
-        if( $absolute_months - $month !== $this->getAbsoluteMonths() )
-        {
-            $this->subDays((int) $this->format('d'));
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return false|static
-     */
-    public function toEndOfDay()
-    {
-        return $this->setTime(23, 59, 59);
-    }
-
-    /**
-     * @return false|static
-     */
-    public function toStartOfDay()
-    {
-        return $this->setTime(0, 0, 0);
-    }
-
-    /**
-     * @return false|static
-     */
-    public function toStartOfMonth()
-    {
-        return $this->setDate($this->format('Y'), $this->format('m'), 1)->toStartOfDay();
-    }
-
-    /**
-     * @return false|static
-     */
-    public function toEndOfMonth()
-    {
-        return $this->setDate($this->format('Y'), $this->format('m'), $this->format('t'))->toEndOfDay();
     }
 
 }
