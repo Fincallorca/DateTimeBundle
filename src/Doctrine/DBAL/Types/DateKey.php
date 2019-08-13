@@ -1,11 +1,13 @@
 <?php
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace Fincallorca\DateTimeBundle\Doctrine\DBAL\Types;
 
+use DateTimeInterface;
 use Exception;
 use Fincallorca\DateTimeBundle\Component\DateTime;
+use Fincallorca\DateTimeBundle\Component\DateTimeKernel;
 
 /**
  * Class DateKey
@@ -18,17 +20,16 @@ use Fincallorca\DateTimeBundle\Component\DateTime;
  */
 class DateKey extends DateTime
 {
-
     /**
-     * @param DateTime $date_time
+     * @param DateTimeInterface $dateTime
      *
      * @return static
      *
      * @throws Exception
      */
-    public static function FromDateTime($date_time): DateKey
+    public static function FromDateTime(DateTimeInterface $dateTime): DateKey
     {
-        return new static($date_time->format('Y-m-d'));
+        return new static($dateTime->format('Y-m-d'), DateTimeKernel::getTimeZoneDatabase());
     }
 
     /**

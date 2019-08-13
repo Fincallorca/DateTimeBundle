@@ -6,7 +6,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-## [1.0.0] - 2019-07-19
+## [1.1.0]
+
+### Added
+- The [DateTimeKernel](src/Component/DateTimeKernel.php) class supports now
+  the validation of timezone names and a general caching of timezone objects.
+- Added unit test for class [DateTimeImmutable](src/Component/DateTimeImmutable.php).
+- Added new class [TestKernel](tests/TestKernel.php) to run functional tests.
+
+### Fixed
+- Classes [DateTime](src/Component/DateTime.php) and [DateTimeImmutable](src/Component/DateTimeImmutable.php)
+  extend now from [prokki/ext-datetime](https://github.com/prokki/ext-datetime) package classes.
+- Replaced old-style symfony/framework dependencies by new flex-style dependencies.
+- Timezone configuration allows `null` values instead of empty timezone names (it is possible to use tilde `datebasse: ~` in the config yaml file).
+- Available doctrine type [DateKey](src/Doctrine/DBAL/Types/DateKey.php) supports now the database timezone. 
+
+## [1.0] - 2019-07-19
 
 ### Added
 - Enabled continuous integration with [travis-ci](https://travis-ci.org/Fincallorca/DateTimeBundle) and [codecov.io](https://codecov.io/gh/Fincallorca/DateTimeBundle).
@@ -94,6 +109,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 - Namespace of bundle file changed.
 
-## [0.0.0] - 2017-10-16
+## [0.0] - 2017-10-16
 
 First version.

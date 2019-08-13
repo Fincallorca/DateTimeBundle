@@ -15,6 +15,7 @@ use Exception;
  * use `date` columns in sql as a primary key.
  *
  * @package Fincallorca\DateTimeBundle
+ *
  * @link    http://stackoverflow.com/a/27138667/4351778
  */
 class DateType extends \Doctrine\DBAL\Types\DateType
@@ -27,11 +28,15 @@ class DateType extends \Doctrine\DBAL\Types\DateType
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
+        // convert to doctrine's datetype type
         $value = parent::convertToPHPValue($value, $platform);
-        if( $value !== null )
+
+        // and afterwards convert to custom type datekey
+        if( !is_null($value) )
         {
             $value = DateKey::FromDateTime($value);
         }
+
         return $value;
     }
 
