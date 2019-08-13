@@ -14,7 +14,8 @@ script:
   - phpunit --configuration phpunit.xml --coverage-clover=coverage.xml
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  # https://github.com/codecov/codecov-python/issues/158 or https://github.com/mapbox/mapbox-gl-native/issues/15095
+  - bash <(curl -s --connect-timeout 300 --max-time 330 --retry 5 --retry-delay 5 https://codecov.io/bash)
 
 notifications:
-  email: false
+  email: true
